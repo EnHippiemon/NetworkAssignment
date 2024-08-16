@@ -1,7 +1,6 @@
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
-using Random = UnityEngine.Random;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
@@ -13,6 +12,7 @@ public class PlayerController : NetworkBehaviour
 
     private NetworkVariable<Vector3> projectileDirection = new NetworkVariable<Vector3>();
     private NetworkVariable<float> projectileRotation = new NetworkVariable<float>();
+    private NetworkVariable<float> projectileCountdown = new NetworkVariable<float>();
     
     private Vector3 mousePos;
     private Vector3 shootDirection;
@@ -46,33 +46,26 @@ public class PlayerController : NetworkBehaviour
         
         healthBar = GetComponentInChildren<TMP_Text>();
         CheckHealthRPC();
-        
-        // if (IsServer)
-        // {
-        
-        // Atm this is not decided by the server. How to fix that? If IsServer,
-        // the colors only change on the host. 
-        
-            SpriteRenderer sprite = GetComponent<SpriteRenderer>();
-            switch (OwnerClientId)
-            {
-                case 0:
-                    sprite.color = Color.red;
-                    break;
-                case 1:
-                    sprite.color = Color.blue;
-                    break;
-                case 2:
-                    sprite.color = Color.yellow;
-                    break;
-                case 3:
-                    sprite.color = Color.black;
-                    break;
-                default:
-                    sprite.color = Color.green;
-                    break;
-            }
-        // }
+
+        SpriteRenderer sprite = GetComponent<SpriteRenderer>(); 
+        switch (OwnerClientId)
+        { 
+            case 0: 
+                sprite.color = Color.red; 
+                break;
+            case 1: 
+                sprite.color = Color.blue; 
+                break;
+            case 2: 
+                sprite.color = Color.yellow; 
+                break;
+            case 3: 
+                sprite.color = Color.black; 
+                break;
+            default: 
+                sprite.color = Color.green; 
+                break;
+        }
     }
 
     void Update()
@@ -96,6 +89,7 @@ public class PlayerController : NetworkBehaviour
         if (IsServer)
         {
             transform.position += (Vector3)moveInput.Value;
+            projectileCountdown.Value += Time.deltaTime;
         }
     }
 
@@ -124,9 +118,10 @@ public class PlayerController : NetworkBehaviour
     [Rpc(SendTo.Server)]
     private void ShootProjectileRPC(Vector3 aimDirection, float aimRotation)
     {
-        if (GameManager.instance.isPlaying.Value == false)
+        if (GameManager.instance.isPlaying.Value == false || projectileCountdown.Value < 0.4f)
             return;
 
+        projectileCountdown.Value = 0f;
         projectileDirection.Value = aimDirection;
         projectileRotation.Value = aimRotation;
         

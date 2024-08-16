@@ -7,9 +7,7 @@ public class DestroyProjectile : NetworkBehaviour
     void Start()
     {
         if (IsServer)
-        {
             StartCoroutine(KillObject());
-        }
     }
 
     IEnumerator KillObject()

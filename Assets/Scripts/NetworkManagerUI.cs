@@ -13,11 +13,7 @@ public class NewBehaviourScript : MonoBehaviour
         if (GUILayout.Button("Join"))
             networkManager.StartClient();        
         
-        // if (GUILayout.Button("Disconnect"))
-        //     networkManager.DisconnectClient();
-        
         if (GUILayout.Button("Quit"))
             Application.Quit();
     }
-
 }

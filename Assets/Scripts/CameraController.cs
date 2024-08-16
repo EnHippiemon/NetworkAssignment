@@ -6,6 +6,5 @@ public class CameraController : NetworkBehaviour
     {
         if (!IsLocalPlayer)
             gameObject.SetActive(false);
-            // Destroy(gameObject);
     }
 }

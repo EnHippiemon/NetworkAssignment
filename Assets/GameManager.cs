@@ -13,9 +13,6 @@ public class GameManager : NetworkBehaviour
     public NetworkVariable<int> totalPlayers = new NetworkVariable<int>();
     public NetworkVariable<bool> isPlaying = new NetworkVariable<bool>();
     
-    // private NetworkVariable<TMP_Text> scoreText = new NetworkVariable<TMP_Text>();
-    
-    // Shouldn't it be a NetworkVariable?
     private TMP_Text scoreBoard;
 
     private void Awake()
@@ -70,7 +67,6 @@ public class GameManager : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     private void SendScoreRPC(int score1, int score2)
     {
-        // can this be hacked and show different figures? 
         scoreBoard.text = "P1: " + score1 + " - P2: " + score2;
     }
     
